@@ -24,7 +24,7 @@ let counter = 1.0;
 let multiplier = 0;
 let counterDepo = [];
 
-let randomStop = Math.random() * (1.2 - 0.1) + 0.8;
+let randomStop = Math.random() * (1.7 - 0.1) + 0.8;
 let cashedOut = false; // flag to indicate if the user has cashed out
 let placedBet = false;
 let isFlying = true;
