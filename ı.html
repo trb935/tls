@@ -1,0 +1,1079 @@
+
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <style>
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+ #response-box {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #d3d3d3;
+    border: 1px solid #ccc;
+    padding: 20px;
+    z-index: 9999;
+  }
+.selected-box {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: #808080; /* Metalik gri arka plan */
+    border: 2px solid #000000;
+    z-index: 9999;
+    color: #ffffff; /* Beyaz renkte yazılar */
+    font-weight: bold; /* Kalın yazı stilini uygula */
+}
+
+
+#gpr-settings {
+    width: 270px;
+    background-color: #d3d3d3;
+    padding: 10px;
+    box-sizing: border-box;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+}
+
+.settings-section {
+    margin-bottom: 20px;
+}
+
+.settings-section select {
+    width: 100%;
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+}
+
+#device-connection-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: none;
+    z-index: 101;
+}
+
+#report-buttons {
+    margin-top: 10px;
+    display: none;
+}
+
+#report-buttons button {
+    margin-right: 10px;
+}
+
+#logo-container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#logo-container img {
+    max-width: 100%;
+}
+
+.btn {
+    display: inline-block;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 10px;
+}
+
+#heatmap-container {
+    width: 80%;
+    height: calc(50vh - 1px); /* Yukarıdaki boşluk ve alttaki boşluğu göz önünde bulunduruldu */
+    position: fixed;
+    top: 1px; /* Üstteki pilot ile arasındaki boşluk göz önünde bulunduruldu */
+    right: 0;
+    z-index: 1;
+    display: none;
+}
+
+.annotation {
+    position: absolute;
+    font-size: 14px;
+}
+
+#gpr-chart {
+    width: 80%;
+    height: calc(50vh - 70px); /* Yukarıdaki boşluk ve alttaki boşluğu göz önünde bulunduruldu */
+    position: fixed;
+    top: calc(50vh + 70px); /* Yukarıdaki boşluğun ve heatmap'in yüksekliğinin toplamı kadar ayarlandı */
+    right: 0;
+    z-index: 1;
+    display: none;
+    overflow-y: auto; /* Scroll bar eklemek */
+}
+
+/* Rapor kutusu stil */
+.rapor-kutusu {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    max-width: 600px;
+    padding: 20px;
+    background-color: white;
+    color: black;
+    border: 2px solid #000;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow-y: auto;
+}
+
+/* Rapor kutusu içerik stil */
+.rapor-kutusu .rapor-icerik {
+    text-align: center;
+}
+
+/* Rapor kutusu başlık stil */
+.rapor-kutusu h2 {
+    margin-bottom: 20px;
+}
+
+/* Rapor kutusu paragraf stil */
+.rapor-kutusu p {
+    margin-bottom: 10px;
+}
+  .confirm-box {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        z-index: 9999;
+    }
+    .confirm-box p {
+        margin: 0 0 10px;
+    }
+    .confirm-box button {
+        padding: 8px 20px;
+        margin-right: 10px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        border-radius: 3px;
+    }
+    .confirm-box button:hover {
+        background-color: #0056b3;
+    }
+
+
+ .alert-box {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 20px;
+        border: 1px solid #f5c6cb;
+        border-radius: 5px;
+        text-align: center;
+        max-width: 300px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 9999;
+        display: none; /* Başlangıçta gizli olarak ayarlandı */
+    }
+
+
+
+
+  #messageBox {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f3f3f3;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        #messageBox p {
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body >
+<div id="response-box">
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-usb-symbol" viewBox="0 0 16 16">
+    <path d="m7.792.312-1.533 2.3A.25.25 0 0 0 6.467 3H7.5v7.319a2.5 2.5 0 0 0-.515-.298L5.909 9.56A1.5 1.5 0 0 1 5 8.18v-.266a1.5 1.5 0 1 0-1 0v.266a2.5 2.5 0 0 0 1.515 2.298l1.076.461a1.5 1.5 0 0 1 .888 1.129 2.001 2.001 0 1 0 1.021-.006v-.902a1.5 1.5 0 0 1 .756-1.303l1.484-.848A2.5 2.5 0 0 0 11.995 7h.755a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h.741a1.5 1.5 0 0 1-.747 1.142L8.76 8.99a2.584 2.584 0 0 0-.26.17V3h1.033a.25.25 0 0 0 .208-.389L8.208.312a.25.25 0 0 0-.416 0Z"/>
+  </svg>
+  <span>Cihazınızın Kablosunu Bağlayın.  Cihaz Bağlantısı Kontrol Edin<br>PortCom Seçeneğinizi seçin! </span>
+</div>
+<div class="alert-box alert-box-1" id="warning-box" style="display: none;">
+    Dil Seçimi cihaz dili ile aynıdır. Cihaz dilinizi ayarlardan çevirin.
+</div>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <div id="gpr-settings">
+
+        <div id="logo-container">
+            <img src="C:\Users\CASPER\Desktop\Radar\lib\GPR.jpg" alt="GPR Logo">
+
+<label for="language-select">
+        <i class="fas fa-globe" style="margin-right: 5px;"></i>
+        Dil Seçiniz:
+    </label>
+    <select id="language-select">
+        <option value="tr">&#x1F1F9;&#x1F1F7; Türkçe</option>
+        <option value="en">&#x1F1EC;&#x1F1E7; English</option>
+        <option value="fr">&#x1F1EB;&#x1F1F7; Français</option>
+        <option value="es">&#x1F1EA;&#x1F1F8; Español</option>
+    </select>
+        </div>
+<div class="settings-section">
+    <label for="depth">Derinlik Metre Ayarı:</label>
+    <select id="depthSelect" onchange="depthOptionSelected(this)">
+       <option style="background-color: white;" disabled selected>Derinlik Seç</option>
+        <option style="background-color: green;" value="1">1 Metre</option>
+        <option style="background-color: green;" value="5">5 Metre</option>
+        <option style="background-color: green;" value="10">10 Metre</option>
+        <option style="background-color: green;" value="15">15 Metre</option>
+        <option style="background-color: green;" value="20">20 Metre</option>
+        <option style="background-color: green;" value="30">30 Metre</option>
+        <option style="background-color: green;" value="32">32 Metre</option>
+    </select>
+</div>
+<div class="settings-section">
+    <label for="width">Arazi Genişlik Çap Ayarlaması:</label>
+    <select id="widthSelect" onchange="widthOptionSelected(this)">
+       <option style="background-color: white;" disabled selected>Kablo Aralığı Seç</option>
+        <option style="background-color: green;" value="50">5 Metre Kablo Aralığı</option>
+        <option style="background-color: #212529;" class="small-text" disabled>+50 Metre Manyetik Alan Tespiti</option>
+        <option style="background-color: green;" value="200">20 Metre</option>
+        <option style="background-color: #212529;" class="small-text" disabled>+200 Metre Manyetik Alan Tespiti</option>
+        <option style="background-color: green;" value="500">50 Metre</option>
+        <option style="background-color: #212529;" class="small-text" disabled>+500 Metre Manyetik Alan Tespiti</option>
+        <option style="background-color: green;" value="800">80 Metre</option>
+        <option style="background-color: #212529;" class="small-text" disabled>+800 Metre Manyetik Alan Tespiti</option>
+    </select>
+</div>
+
+        <div class="settings-section">
+            <label for="electrode-configuration">Elektrot Dizilimi:</label>
+            <select id="electrode-configuration" onchange="showSelectedOption(this, 'Elektrod Dizilimi:')">
+               <option style="background-color: white ;" disabled selected>Elektrot Seç</option>
+                <option style="background-color: green; value="schlumberger">Schlumberger</option>
+                <option style="background-color: green; value="wenner">Wenner</option>
+                <option style="background-color: green; value="dipol-dipol">Dipol-dipol</option>
+                <option  style="background-color: green; value="two-way-three-electrode">İki-Yönlü 3 Elektrot</option>
+            </select>
+        </div>
+<div class="settings-section" id="portcom-options">
+    <label for="portcom">PORTCOM Seçenekleri:</label>
+    <select id="portcom">
+        <option style="background-color: white;" disabled selected>Port Seç</option>
+        <option style="background-color: green;" value="com1">COM1</option>
+        <option style="background-color: green;" value="com2">COM2</option>
+        <option style="background-color: green;" value="com3">COM3</option>
+        <option style="background-color: green;" value="com4">COM4</option>
+    </select>
+</div>
+
+<button id="connectButton" onclick="listConnectedDevices()">Connect to USB Device</button>
+
+<div id="messageBox"></div>
+
+<script>
+async function listConnectedDevices() {
+    try {
+        const selectedPort = document.getElementById('portcom').value;
+        const devices = await navigator.usb.getDevices();
+        if (devices.length > 0) {
+            let message = 'Connected USB devices:\n';
+            devices.forEach(device => {
+                // Burada cihazın adını veya istediğiniz başka bir özelliğini alabilirsiniz
+                const deviceInfo = `Manufacturer: ${device.manufacturerName}, Product: ${device.productName}\n`;
+                message += `- ${deviceInfo}`;
+            });
+            showMessage(message);
+        } else {
+            showMessage('No USB devices found.');
+        }
+    } catch (error) {
+        showMessage('Error listing connected USB devices: ' + error);
+        console.error('Error listing connected USB devices:', error);
+    }
+}
+
+function showMessage(message) {
+    const messageBox = document.getElementById('messageBox');
+    messageBox.textContent = message;
+    messageBox.style.display = 'block';
+    setTimeout(() => {
+        messageBox.style.display = 'none';
+    }, 7000); // 7 saniye sonra mesaj kutusunu gizle
+}
+
+</script>
+
+
+
+
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<button style="background-color:#0A55EC; padding: 5px 10px; color: black;" id="device-connection-button" onclick="checkDeviceConnection()">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-usb-symbol" viewBox="0 0 16 16">
+        <path d="m7.792.312-1.533 2.3A.25.25 0 0 0 6.467 3H7.5v7.319a2.5 2.5 0 0 0-.515-.298L5.909 9.56A1.5 1.5 0 0 1 5 8.18v-.266a1.5 1.5 0 1 0-1 0v.266a2.5 2.5 0 0 0 1.515 2.298l1.076.461a1.5 1.5 0 0 1 .888 1.129 2.001 2.001 0 1 0 1.021-.006v-.902a1.5 1.5 0 0 1 .756-1.303l1.484-.848A2.5 2.5 0 0 0 11.995 7h.755a.25.25 0 0 0 .25-.25v-2.5a.25.25 0 0 0-.25-.25h-2.5a.25.25 0 0 0-.25.25v2.5c0 .138.112.25.25.25h.741a1.5 1.5 0 0 1-.747 1.142L8.76 8.99a2.584 2.584 0 0 0-.26.17V3h1.033a.25.25 0 0 0 .208-.389L8.208.312a.25.25 0 0 0-.416 0Z"/>
+    </svg>
+    <b style="color: black; margin-left: 5px;">Cihaz Bağlantısı Kontrol</b>
+</button>
+
+
+
+<button style="background-color:#E5EAF4" id="start-button" disabled onclick="startGPR()"><b>Start Radar</b></button>
+
+        <div id="report-buttons">
+            <button class="btn" onclick="showReportBox()">Rapor Oluştur</button>
+            <button class="btn" onclick="window.print()">Yazdır</button>
+        </div>
+        <div id="device-connection-message"></div>
+    </div>
+
+  <div id="heatmap-container">
+    <div id="myDiv"></div>
+
+
+    </div>
+</div>
+
+    <div id="gpr-chart"></div>
+
+<script>
+const languageSelect = document.getElementById('language-select');
+
+// Dil seçimi değiştiğinde bu fonksiyon çalışacak
+languageSelect.addEventListener('change', function() {
+    const warningBox = document.getElementById('warning-box');
+    if (warningBox) { // Uyarı kutusu varsa
+        if (this.value === 'en') {
+            warningBox.innerText = 'The device language is the same as the selected language. Please change your device language settings.';
+        } else if (this.value === 'fr') {
+            warningBox.innerText = 'La langue de l\'appareil est la même que celle sélectionnée. Veuillez modifier les paramètres de langue de votre appareil.';
+        } else if (this.value === 'es') {
+            warningBox.innerText = 'El idioma del dispositivo es el mismo que el idioma seleccionado. Por favor, cambie la configuración de idioma de su dispositivo.';
+        } else if (this.value === 'tr') {
+            warningBox.innerText = 'Seçtiğiniz dil ile cihaz diliniz aynı. Cihaz dilinizi ayarlarınızdan değiştirin.';
+        } else {
+            warningBox.innerText = 'Device language is same as selected language. Change your device language settings.';
+        }
+        warningBox.style.display = 'block'; // Uyarı kutusunu görünür yap
+        setTimeout(function() {
+            warningBox.style.display = 'none'; // 5 saniye sonra uyarı kutusunu gizle
+        }, 5000);
+    } else {
+        console.error('Uyarı kutusu bulunamadı!'); // Uyarı kutusu yoksa konsola hata mesajı yaz
+    }
+});
+
+
+
+  // Sayfa yüklendiğinde işlemleri başlat 15000
+  document.addEventListener('DOMContentLoaded', function() {
+    // Program yanıtını göster
+    showResponseBox();
+
+    // Belirli bir süre sonra program yanıtını gizle
+    setTimeout(function() {
+      hideResponseBox();
+    }, 5000);
+  });
+
+  // Program yanıt kutusunu göster
+  function showResponseBox() {
+    document.getElementById('response-box').style.display = 'block';
+  }
+
+  // Program yanıt kutusunu gizle
+  function hideResponseBox() {
+    document.getElementById('response-box').style.display = 'none';
+  }
+
+var depthSoundPaths = {
+    "1": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d1.mp3",
+    "5": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d5.mp3",
+    "10": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d10.mp3",
+    "15": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d15.mp3",
+    "20": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d20.mp3",
+    "30": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d30.mp3",
+    "32": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\d32.mp3"
+};
+
+var widthSoundPaths = {
+    "50": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\a5.mp3",
+    "200": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\a20.mp3",
+    "500": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\a50.mp3",
+    "800": "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\a80.mp3"
+};
+
+var successSoundPath = "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\s.mp3";
+var failureSoundPath = "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\f.mp3";
+var buttonClickSoundPath = "C:\\Users\\CASPER\\Desktop\\Radar\\ses\\kontrol.mp3";
+
+function depthOptionSelected(select) {
+    var selectedOptionValue = select.value;
+    var soundPath = depthSoundPaths[selectedOptionValue];
+    playSound(soundPath);
+}
+
+function widthOptionSelected(select) {
+    var selectedOptionValue = select.value;
+    var soundPath = widthSoundPaths[selectedOptionValue];
+    playSound(soundPath);
+}
+
+function playSound(soundFile) {
+    var audio = new Audio(soundFile);
+    audio.play();
+}
+
+var gprActive = false;
+var gprData = [];
+var gprSettingsDisabled = false;
+// CSS ile stillendirme
+var warningMessageStyle = "position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: black; color: white; padding: 20px; border-radius: 10px; display: none;";
+var closeButtonStyle = "position: absolute; top: 5px; right: 5px; cursor: pointer; color: red;";
+
+// JavaScript ile warning-message divini oluşturma
+
+// warning-message divini oluşturma
+var warningMessageDiv = document.createElement("div");
+warningMessageDiv.id = "warning-message";
+warningMessageDiv.setAttribute("style", warningMessageStyle);
+document.body.appendChild(warningMessageDiv);
+
+// kapatma butonunu oluşturma
+var closeButton = document.createElement("span");
+closeButton.classList.add("bi", "bi-x-circle");
+closeButton.setAttribute("style", closeButtonStyle);
+closeButton.setAttribute("aria-label", "Close");
+closeButton.addEventListener("click", function () {
+    warningMessageDiv.style.display = "none";
+});
+warningMessageDiv.appendChild(closeButton);
+
+// start-button olayı için dinleyici eklenmesi
+document.getElementById("start-button").addEventListener("click", function () {
+    // checkDeviceConnection işlevini etkisiz kıl
+    document.getElementById("start-button").removeEventListener("click", checkDeviceConnection);
+});
+
+// checkDeviceConnection fonksiyonu
+function checkDeviceConnection() {
+    var startButton = document.getElementById("start-button");
+
+    // start-button aktif hale getirildiyse, hiçbir kontrol yapmadan işlevi sonlandır
+    if (!startButton.disabled) {
+        return;
+    }
+
+    var depthSelect = document.getElementById("depthSelect");
+    var widthSelect = document.getElementById("widthSelect");
+    var electrodeConfiguration = document.getElementById("electrode-configuration");
+    var portcom = document.getElementById("portcom");
+    var deviceConnectionMessage = document.getElementById("device-connection-message");
+    var warningMessage = document.getElementById("warning-message");
+
+    // Kontrol et seçeneklerinin herhangi birisi seçilmemişse
+    var missingOptions = [];
+    if (depthSelect.selectedIndex === 0) {
+        missingOptions.push("Derinlik Metre Ayarı");
+    }
+    if (widthSelect.selectedIndex === 0) {
+        missingOptions.push("Arazi Genişlik Çap Ayarlaması");
+    }
+    if (electrodeConfiguration.selectedIndex === 0) {
+        missingOptions.push("Elektrot Dizilimi");
+    }
+    if (portcom.selectedIndex === 0 || portcom.value !== "com3") {
+        missingOptions.push("PORTCOM Seçenekleri");
+    }
+
+    if (missingOptions.length > 0) {
+        warningMessage.innerHTML = "Tüm Ayarları Tamamlayın:<br>" + missingOptions.join("<br>");
+        warningMessage.style.display = "block"; // Kutuyu göster
+
+        // Eğer eksik seçenek varsa, uyarının 1 saniye sonra kaybolmasını sağla
+        setTimeout(function () {
+            warningMessage.style.display = "none";
+        }, 15000);
+
+        return; // Cihaz bağlantısını kontrol etme, fonksiyondan çık
+    } else {
+        warningMessage.style.display = "none"; // Kutuyu gizle
+    }
+
+    // PortCom kontrolü
+    deviceConnectionMessage.innerText = "PortCom Kontrol Ediliyor...";
+    deviceConnectionMessage.style.display = "block";
+
+    setTimeout(function () {
+        deviceConnectionMessage.style.display = "none"; // PortCom Kontrol Ediliyor mesajını gizle
+        // Rastgele bir seri numarası oluştur
+        var serialNumber = "Serial: A3B2-1F8G-6H9K-5D7J-0L2M"; // Sabit seri numarası
+        var localDateTime = new Date().toLocaleString();
+
+        deviceConnectionMessage.innerText = "PortCom Kontrol Ediliyor..\n" + serialNumber + "\n" + localDateTime; // Yeni tarih-zaman ekleme
+        deviceConnectionMessage.style.display = "block"; // Yeni PortCom Kontrol Ediliyor mesajını göster
+
+        // Port girişlerinin kontrolü
+        var portConnections = "Problar  Tespit edildi: ";
+        portConnections += "P1 - P2 - P3 - P4";
+        deviceConnectionMessage.innerText = portConnections + "\nBaşarılı.\n" + serialNumber + "\n" + localDateTime;
+
+        setTimeout(function () {
+            var isSuccess = Math.random() < 0.9; // %90 başarı oranı
+            if (isSuccess) {
+                deviceConnectionMessage.innerText = "Cihaz Bağlantısı Başarılı\n" + serialNumber + "\n" + localDateTime;
+                startButton.disabled = false; // Başarılı olduğunda start-button'u etkinleştir
+                // Başarılı olduğunda uyarı kutusunu gizle
+                setTimeout(function () {
+                    warningMessage.style.display = "none";
+                }, 15000);
+            } else {
+                deviceConnectionMessage.innerText = "Cihaz Bağlantısı Başarısız\n" + serialNumber + "\n" + localDateTime;
+                warningMessage.innerHTML = "Cihaz bağlantısı başarısız. Lütfen tekrar deneyin.";
+                warningMessage.style.display = "block"; // Başarısız olduğunda uyarı göster
+                setTimeout(function () {
+                    warningMessage.style.display = "none";
+                }, 15000); // Uyarıyı 1 saniye sonra gizle
+            }
+            // deviceConnectionMessage kutusunu da 1 saniye sonra gizle
+            setTimeout(function () {
+                deviceConnectionMessage.style.display = "none";
+            }, 15000);
+        }, 15000);
+    }, 15000); // PortCom Kontrol Ediliyor mesajını 1 saniye sonra gizle
+}
+
+
+
+
+
+
+function startGPR() {
+    if (!gprActive) {
+        var audio = new Audio("C:\\Users\\CASPER\\Desktop\\Radar\\ses\\ee.mp3");
+        audio.play();
+
+document.getElementById("gpr-chart").style.display = "block";
+document.getElementById("heatmap-container").style.display = "block";
+gprActive = true;
+var startButton = document.getElementById("start-button");
+startButton.innerHTML = "<strong>Resistivity Aktif</strong>";
+startButton.style.backgroundColor = "#85FC8C";
+disableGPRSettings();
+simulateGPR();
+
+// Elektrod Dizilimi seçeneği seçildiğinde uyarı kutusu gösterme
+document.getElementById("depthSelect").addEventListener("change", function() {
+    showMessageBox("Elektrod Dizilimi: " + this.value);
+});
+
+// PORTCOM Options seçeneği seçildiğinde uyarı kutusu gösterme
+document.getElementById("widthSelect").addEventListener("change", function() {
+    showMessageBox("PORTCOM Options (PORTCOM Seçenekleri): " + this.value);
+});
+
+
+
+        // 2 dakika sonra GPR ayarları butonlarını göster
+        setTimeout(function () {
+            enableGPRSettings();
+            var raporGosterButton = document.createElement("button");
+            raporGosterButton.innerText = "Raporu Göster";
+            raporGosterButton.onclick = showReportBox;
+            document.getElementById("gpr-settings").appendChild(raporGosterButton);
+
+            var yeniTaramaButton = document.createElement("button");
+            yeniTaramaButton.innerText = "Yeni Tarama";
+            yeniTaramaButton.onclick = function () {
+                window.location.reload();
+            };
+            document.getElementById("gpr-settings").appendChild(yeniTaramaButton);
+
+            var csvKaydetButton = document.createElement("button");
+            csvKaydetButton.innerText = "CSV Kaydet";
+            csvKaydetButton.onclick = askToSaveToCSV;
+            document.getElementById("gpr-settings").appendChild(csvKaydetButton);
+        }, 120000); // 2 dakika (120000 milisaniye)
+    }
+}
+
+
+
+
+   
+    
+
+
+function simulateGPR() {
+    var interval = setInterval(function () {
+        if (!gprActive) {
+            clearInterval(interval);
+            return;
+        }
+
+        var y = Math.floor(Math.random() * 100);
+        gprData.push(y);
+        updateChart(gprData);
+    }, 1000);
+}
+
+function updateChart(data) {
+    var layout = {
+        title: 'Rezistivite Veri -  Zaman Analizi',
+        xaxis: {
+            title: 'Zaman (s)',
+            showgrid: false,
+            zeroline: false
+        },
+        yaxis: {
+            title: '',
+            showline: false
+        }
+    };
+    Plotly.newPlot('gpr-chart', [{
+        y: data,
+        type: 'scatter'
+    }], layout, {
+        displayModeBar: false
+    });
+}
+
+function disableGPRSettings() {
+    var gprSettings = document.getElementById("gpr-settings").querySelectorAll("button, select");
+    gprSettings.forEach(function (element) {
+        element.disabled = true;
+    });
+    gprSettingsDisabled = true;
+}
+
+function enableGPRSettings() {
+    var gprSettings = document.getElementById("gpr-settings").querySelectorAll("button, select");
+    gprSettings.forEach(function (element) {
+        element.disabled = false;
+    });
+    gprSettingsDisabled = false;
+}
+
+function showReportBox() {
+    // Derinlik Metre Ayarı ve Arazi Genişlik Çap Ayarlaması seçeneklerini al
+    var derinlikMetre = document.getElementById("depthSelect").value;
+    var araziGenislik = document.getElementById("widthSelect").value;
+
+    // Rapor kutusunu oluştur
+    var raporKutusu = document.createElement("div");
+    raporKutusu.classList.add("rapor-kutusu");
+
+    // ALTIN, BAKIR ve GÜMÜŞ için rastgele yüzdeler oluştur
+    var altinYuzde = Math.floor(Math.random() * 6); // 0 ile 5 arası rastgele sayı
+    var bakirYuzde = Math.floor(Math.random() * 4); // 0 ile 3 arası rastgele sayı
+    var gumusYuzde = Math.floor(Math.random() * 9); // 0 ile 8 arası rastgele sayı
+
+    // Boşluk için rastgele yüzde ve derinlik oluştur
+    var boslukYuzde = Math.floor(Math.random() * 31) + 50; // 50 ile 80 arası rastgele sayı
+    var boslukDerinlik = Math.floor(Math.random() * 10) + 1; // 1 ile 10 arası rastgele sayı
+    var boslukUzaklik = Math.floor(Math.random() * 4) + 3; // 3 ile 6 arası rastgele sayı
+
+    // Boşluk türünü rastgele belirle
+    var boslukTuru = Math.random() < 0.5 ? "sığ boşluklar" : "doğal boşluklar";
+
+    // Su için rastgele yüzde, adet ve derinlik oluştur
+    var suYuzde = Math.floor(Math.random() * 41) + 50; // 50 ile 90 arası rastgele sayı
+    var suAdet = Math.floor(Math.random() * 3) + 2; // 2 ile 4 arası rastgele sayı
+    var suDerinlik = Math.floor(Math.random() * 5) + 1; // 1 ile 5 arası rastgele sayı
+    var suUzaklik = Math.floor(Math.random() * 4) + 3; // 3 ile 6 arası rastgele sayı
+
+    // Su bulunduğu yönu genellikle doğuda bulunur
+    var suYon = "doğu";
+
+    // Rapor kutusu içeriği
+    raporKutusu.innerHTML = `
+    <div class="rapor-icerik">
+        <h2>Raporunuz</h2>
+        <p><i class="bi bi-journal"></i> Derinlik Metre Ayarı: ${derinlikMetre} Metre</p>
+        <p><i class="bi bi-journal"></i> Arazi Genişlik Çap Ayarlaması: ${araziGenislik} Metre</p>
+        <p><i class="bi bi-journal"></i> ALTIN: %${altinYuzde} (Seçilen Parametrelerde Toplu halde gömülü & Maden olarak rastlanmadı.)</p>
+        <p><i class="bi bi-journal"></i> BAKIR: %${bakirYuzde} (Seçilen Parametrelerde Toplu halde gömülü & Maden olarak rastlanmadı.)</p>
+        <p><i class="bi bi-journal"></i> GÜMÜŞ: %${gumusYuzde} (Seçilen Parametrelerde Toplu halde gömülü & Maden olarak rastlanmadı.)</p>
+        <p><i class="bi bi-journal"></i> Oksitli Taş ve Doğal Kayalar: %${Math.floor(Math.random() * 10) + 90} (Oksitli Taş - Mineral Kayaları Tespit Edildi (Doğal) </p>
+        <p><i class="bi bi-journal"></i> Boşluk: %${boslukYuzde} (Seçilen Parametrelerde  ${boslukDerinlik} metreye kadar  ${boslukTuru} bulundu, uzaklık: ${boslukUzaklik}, derinlik: ${boslukDerinlik}</p>
+        <p><i class="bi bi-journal"></i> SU: %${suYuzde} (Seçilen Parametrelerde  ${suAdet} su kaynağı bulundu, ${suYon} istikametinde, uzaklık: ${suUzaklik}, derinlik: ${suDerinlik}</p>
+        <button id="rapor-kapat-button" onclick="hideReportBox()">Raporu Kapat</button>
+        <hr>
+        <p><i class="bi bi-file-text"></i> <b>Radar Manyetik Raporu:</b> Kablo aralığı iç çap monitörde  görüntüleniyor. Geniş Manyetik alan rapor sonucu .csv dosyanızda, Detaylı haritalama için Voxler Veya Snuffler Programını kullanın.</p>
+        <p><i class="bi bi-clock"></i> <b>${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}</b></p>
+    </div>
+`;
+
+    // Rapor kutusunu sayfaya ekle
+    document.body.appendChild(raporKutusu);
+}
+
+function hideReportBox() {
+    var raporKutusu = document.querySelector(".rapor-kutusu");
+    raporKutusu.remove();
+}
+
+function showSelectedOption(select, label) {
+    alert(label + " " + select.value);
+}
+
+
+
+
+
+
+// CSV verilerini global olarak saklamak için boş bir değişken oluşturalım
+var globalCsvContent = "";
+
+function askToSaveToCSV() {
+    // Eğer CSV içeriği yoksa, yeni bir içerik oluşturalım
+    if (!globalCsvContent) {
+        generateCSVContent();
+    }
+
+    var confirmBox = document.createElement("div");
+    confirmBox.classList.add("confirm-box");
+    confirmBox.innerHTML = `
+        <textarea id="csv-box" readonly style="width: 50%; height: 80px; resize: none;">${globalCsvContent}</textarea>
+        <br>
+        <button onclick="showAndCopyCSV()">Kopyala</button>
+        <button onclick="saveCSVToFile()">Kaydet</button>
+    `;
+    document.body.appendChild(confirmBox);
+}
+
+function askToSaveToCSV() {
+    var confirmBox = document.createElement("div");
+    confirmBox.classList.add("confirm-box");
+    confirmBox.innerHTML = `
+        <p>CSV dosyasını kaydetmek istiyor musunuz?</p>
+        <button onclick="saveToCSV()">Kaydet</button>
+        <button onclick="cancelSaveToCSV()">Kaydetme</button>
+    `;
+    document.body.appendChild(confirmBox);
+}
+
+function cancelSaveToCSV() {
+    var confirmBox = document.querySelector(".confirm-box");
+    confirmBox.remove();
+}
+
+function saveToCSV() {
+    var confirmBox = document.querySelector(".confirm-box");
+    confirmBox.remove();
+
+    var csvContent = "data:text/csv;charset=utf-8,";
+    csvContent += "time;-Bx;-By;-Bz;-BT\n";
+
+    for (var i = 0; i < 250; i++) {
+        var now = new Date();
+        var time = `${formatTime(now.getHours())}:${formatTime(now.getMinutes())}:${formatTime(now.getSeconds())}:${formatMilliseconds(now.getMilliseconds())}`;
+        var Bx = (-Math.random() * 100).toFixed(2).replace('.', ',');
+        var By = (-Math.random() * 100).toFixed(2).replace('.', ',');
+        var Bz = (-Math.random() * 100).toFixed(2).replace('.', ',');
+        var BT = (Math.random() * 100).toFixed(2).replace('.', ',');
+        csvContent += `${time};${Bx};${By};${Bz};${BT}\n`;
+    }
+
+    var encodedUri = encodeURI(csvContent);
+    var link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "data.csv");
+    document.body.appendChild(link);
+
+    link.click();
+}
+
+function formatTime(time) {
+    return time < 10 ? `0${time}` : time;
+}
+
+function formatMilliseconds(milliseconds) {
+    if (milliseconds < 10) {
+        return `00${milliseconds}`;
+    } else if (milliseconds < 100) {
+        return `0${milliseconds}`;
+    }
+    return milliseconds;
+}
+
+document.getElementById("device-connection-button").addEventListener("click", function () {
+    playSound(buttonClickSoundPath);
+});
+
+
+function showSelectedOption(selectElement, label) {
+    var selectedOption = selectElement.options[selectElement.selectedIndex].value;
+
+    if (selectedOption) {
+        var messageBox = document.createElement('div');
+        messageBox.textContent = label + ' ' + selectedOption;
+        messageBox.classList.add('selected-box'); // CSS sınıfı ekle
+
+        document.body.appendChild(messageBox);
+
+        setTimeout(function() {
+            messageBox.parentNode.removeChild(messageBox);
+        }, 3000); // 3 saniye sonra mesaj kutusunu kaldır
+    }
+}
+
+</script>
+
+
+    <script src='https://cdn.plot.ly/plotly-2.26.0.min.js'></script>
+<script>
+    var layout = {
+        annotations: [],
+        coloraxis: {
+            cmin: 0,
+            cmax: 100,
+            colorscale: [
+                [0, 'rgb(0, 0, 255)'], // Mavi (Su)
+                [0.1, 'rgb(220, 220, 220)'], // Gri (Sığ Boşluk)
+                [0.2, 'rgb(128, 128, 128)'], // Gri (Değersiz Metal)
+                [0.3, 'rgb(255, 255, 0)'], // Sarı (Kireçtaşı)
+                [0.4, 'rgb(0, 255, 0)'], // Yeşil (Oksit)
+                [0.6, 'rgb(255, 165, 0)'], // Turuncu (Oksitli Taş)
+                [0.7, 'rgb(255, 192, 203)'], // Pembe (Kalsit)
+                [0.8, 'rgb(128, 0, 128)'], // Mor (Pirit)
+                [0.9, 'rgb(255, 69, 0)'], // Alev Kırmızısı (Demir)
+                [0.95, 'rgb(210, 180, 140)'], // Kahverengi (Paslı Metal)
+                [1, 'rgb(255, 0, 0)'] // Kırmızı (Mineraller)
+            ]
+        },
+        width: window.innerWidth * 0.8,
+        height: '50vh',
+        margin: { t: 0, r: 0, b: 0, l: 0 }
+    };
+
+    let intervalId;
+    let isVisualizationStarted = false;
+    let currentDepth = 0;
+    let currentWidth = 0;
+    let selectedDepth = parseFloat(document.getElementById('depthSelect').value);
+    let selectedWidth = parseFloat(document.getElementById('widthSelect').value);
+
+    window.onload = function () {
+        document.getElementById('start-button').addEventListener('click', startVisualization);
+        document.getElementById('depthSelect').addEventListener('change', updateDepth);
+        document.getElementById('widthSelect').addEventListener('change', updateWidth);
+        generateRandomHeatmap();
+        hidePlotlyLogo();
+    };
+
+    const startVisualization = () => {
+        if (!isVisualizationStarted) {
+            isVisualizationStarted = true;
+            let i = 0;
+            let depthIncrement = selectedDepth / 120; // Toplam 120 adımda seçilen derinliğe ulaşması için adım miktarı
+            let widthIncrement = selectedWidth / 120; // Toplam 120 adımda seçilen genişlik çap ayarlaması değerine ulaşması için adım miktarı
+            intervalId = setInterval(() => {
+                if (i < 120) { // Toplam süreyi 120 saniye (2 dakika) olarak ayarla
+                    currentDepth += depthIncrement; // Her adımda derinliği artır
+                    currentWidth += widthIncrement; // Her adımda genişlik çap ayarlaması değerini artır
+                    generateRandomHeatmap();
+                    i++;
+                } else {
+                    clearInterval(intervalId);
+                }
+            }, 1000); // Her saniyede bir güncelle
+        }
+    };
+
+    const updateDepth = () => {
+        selectedDepth = parseFloat(document.getElementById('depthSelect').value);
+    };
+
+    const updateWidth = () => {
+        selectedWidth = parseFloat(document.getElementById('widthSelect').value);
+    };
+
+    const generateRandomHeatmap = () => {
+        let randomData = [];
+        let annotations = [];
+        for (let i = 0; i < 10; i++) {
+            let row = [];
+            for (let j = 0; j < 10; j++) {
+                let value = Math.floor(Math.random() * 100);
+                row.push(value);
+                if (value < 40) {
+                    annotations.push({ x: j, y: i, text: '', showarrow: false, font: { color: 'green', size: 6 } }); // Yazı boyutu 6 olarak ayarlandı
+                } else {
+                    annotations.push({ x: j, y: i, text: '', showarrow: false, font: { color: 'black', size: 6 } }); // Yazı boyutu 6 olarak ayarlandı
+                }
+            }
+            randomData.push(row);
+        }
+
+        layout.annotations = [
+            {
+                x: 0.5,
+                y: 1,
+                xref: 'paper',
+                yref: 'paper',
+                xanchor: 'center',
+                yanchor: 'top',
+                text: 'Ulaşılan Derinlik: ' + currentDepth.toFixed(2) + ' Metre<br>Kablo Aralığı + Ulaşılan Arazi Çapı Radar Sinyali: ' + currentWidth.toFixed(2) + ' Metre',
+                showarrow: false,
+                font: { size: 22, color: 'gray' },
+                bgcolor: '#000000',
+                opacity: 0.7,
+                align: 'center' // Yazıyı ortalamak için 'center' değeri kullanılır
+            },
+            {
+                 x: 0,
+                y: 1,
+                xref: 'paper',
+                yref: 'paper',
+                xanchor: 'left',
+                yanchor: 'top',
+                text: 'PROB1',
+                showarrow: false,
+                font: { size: 20, color: 'white' },
+                bgcolor: '#000000',
+                opacity: 0.7,
+                align: 'left'
+            },
+            {
+                x: 0,
+                y: 0.06,
+                xref: 'paper',
+                yref: 'paper',
+                xanchor: 'left',
+                yanchor: 'bottom',
+                text: 'PROB2',
+                showarrow: false,
+                font: { size: 20, color: 'white' },
+                bgcolor: '#000000',
+                opacity: 0.7,
+                align: 'left'
+            },
+            {
+                x: 1,
+                y: 1,
+                xref: 'paper',
+                yref: 'paper',
+                xanchor: 'right',
+                yanchor: 'top',
+                text: 'PROB3',
+                showarrow: false,
+                font: { size: 20, color: 'white' },
+                bgcolor: 'RED',
+                opacity: 0.7,
+                align: 'right'
+            },
+            {
+                x: 1,
+                y: 0.06,
+                xref: 'paper',
+                yref: 'paper',
+                xanchor: 'right',
+                yanchor: 'bottom',
+                text: 'PROB4',
+                showarrow: false,
+                font: { size: 20, color: 'white' },
+                bgcolor: 'RED',
+                opacity: 0.7,
+                align: 'right'
+            }
+        ];
+
+
+        let data = [{
+            z: randomData,
+            type: 'heatmap',
+            hoverongaps: false,
+            transpose: true,
+            zsmooth: "best",
+            coloraxis: 'coloraxis'
+        }];
+
+        Plotly.newPlot('myDiv', data, layout);
+        hidePlotlyLogo();
+    };
+
+    // Plotly logosunu gizleme fonksiyonu
+    function hidePlotlyLogo() {
+        const plotlyLogo = document.querySelector('.modebar-btn.plotlyjsicon.modebar-btn--logo');
+        if (plotlyLogo) {
+            plotlyLogo.parentNode.removeChild(plotlyLogo);
+        }
+    }
+
+    // Harici bağlantıların açılmasını engellemek için bu fonksiyonu ekliyoruz
+    window.addEventListener('click', function (event) {
+        if (event.target.tagName === 'A' && event.target.getAttribute('target') === '_blank') {
+            event.preventDefault();
+        }
+    });
+
+    // Seçilen seçenekleri göstermek için fonksiyonu güncelle
+    function updateOptions(select, label) {
+        var selectedOption = select.value;
+        if (selectedOption !== "") {
+            var messageBox = document.getElementById('messageBox');
+            messageBox.innerText = label + " " + selectedOption;
+            messageBox.style.display = 'block';
+            setTimeout(function() {
+                messageBox.style.display = 'none';
+            }, 3000); // Hide the message box after 3 seconds
+        }
+        generateRandomHeatmap(); // Burada mevcut generateRandomHeatmap fonksiyonunu çağırıyoruz
+    }
+</script>
+
+
+
+
+</body>
+
+</html>
